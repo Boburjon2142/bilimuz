@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold mb-3">Buyurtma berish</h3>
+<div class="row g-4">
+    <div class="col-lg-7">
+        <form method="post" class="card p-3">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">F.I.Sh</label>
+                    {{ form.full_name }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Telefon</label>
+                    {{ form.phone }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Qo‘shimcha telefon</label>
+                    {{ form.extra_phone }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Manzil</label>
+                    {{ form.address }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Izoh</label>
+                    {{ form.note }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">To‘lov turi</label>
+                    {{ form.payment_type }}
+                </div>
+            </div>
+            <button class="btn btn-primary mt-3" type="submit">Buyurtma jo‘natish</button>
+        </form>
+    </div>
+    <div class="col-lg-5">
+        <div class="card p-3">
+            <h5 class="fw-bold">Buyurtma yig‘indisi</h5>
+            <ul class="list-group list-group-flush">
+                {% for item in cart_items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-semibold">{{ item.book.title }}</div>
+                        <small class="text-muted">x{{ item.quantity }}</small>
+                    </div>
+                    <span>${{ item.line_total }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-semibold">Umumiy</span>
+                <span class="fw-bold">${{ cart_total }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

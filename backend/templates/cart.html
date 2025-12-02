@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold mb-3">Savatingiz</h3>
+{% if cart_items %}
+<div class="table-responsive">
+<table class="table align-middle">
+    <thead>
+    <tr>
+        <th>Kitob</th>
+        <th>Narx</th>
+        <th style="width: 170px;">Miqdor</th>
+        <th>Jami</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in cart_items %}
+    <tr>
+        <td class="d-flex align-items-center gap-2">
+            <img src="{{ item.book.cover_image.url if item.book.cover_image else 'https://via.placeholder.com/60x80?text=Rasm+yo%27q' }}" class="rounded" style="width:60px;height:80px;object-fit:cover;" alt="{{ item.book.title }}">
+            <div>
+                <div class="fw-semibold">{{ item.book.title }}</div>
+                <small class="text-muted">{{ item.book.author.name }}</small>
+            </div>
+        </td>
+        <td>${{ item.price }}</td>
+        <td>
+            <form method="post" action="{% url 'update_cart' item.book.id %}" class="d-flex align-items-center gap-2">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm text-center" style="width:80px;">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">Yangilash</button>
+            </form>
+        </td>
+        <td>${{ item.line_total }}</td>
+        <td>
+            <form method="post" action="{% url 'remove_from_cart' item.book.id %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-danger">O‘chirish</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <h4 class="fw-bold">Umumiy: ${{ cart_total }}</h4>
+    <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg">Buyurtma berish</a>
+</div>
+{% else %}
+<p>Savat bo‘sh.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center py-5">
+    {% if order %}
+    <h3 class="fw-bold">Rahmat! Buyurtmangiz qabul qilindi.</h3>
+    <p class="lead">Buyurtma raqami: #{{ order.id }} | Umumiy: ${{ order.total_price }}</p>
+    <p class="text-muted">Tez orada {{ order.phone }} raqami orqali bog‘lanamiz.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Bosh sahifaga qaytish</a>
+    {% else %}
+    <p>Buyurtma topilmadi.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Bosh sahifa</a>
+    {% endif %}
+</div>
+{% endblock %}
