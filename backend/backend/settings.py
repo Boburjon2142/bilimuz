@@ -3,9 +3,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = "o'zgartring"
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "o'zgartring")
+DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
+
+_allowed_hosts = os.environ.get("DJANGO_ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(",") if h.strip()]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -28,7 +30,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "backend.urls"
+ROOT_URLCONF = 'backend.backend.urls'
 
 TEMPLATES = [
     {
@@ -48,12 +50,19 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "backend.wsgi.application"
+WSGI_APPLICATION = 'backend.backend.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_DB", "bookstore_db"),
+        "USER": os.environ.get("POSTGRES_USER", "bookuser"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "StrongPassword123"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+        "OPTIONS": {
+            "options": "-c client_encoding=UTF8",
+        },
     }
 }
 

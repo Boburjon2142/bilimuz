@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Author, Category, Book
+from .models import Author, Category, Book, Banner
 
 
 @admin.register(Author)
@@ -21,3 +21,9 @@ class BookAdmin(admin.ModelAdmin):
     list_filter = ("category", "author", "is_recommended", "book_format")
     search_fields = ("title", "author__name")
     prepopulated_fields = {"slug": ("title",)}
+
+
+@admin.register(Banner)
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ("title", "order", "is_active", "created_at")
+    list_editable = ("order", "is_active")

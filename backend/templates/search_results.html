@@ -1,48 +1,131 @@
 {% extends "base.html" %}
 {% block content %}
-<h4 class="fw-bold mb-3">“{{ query }}” bo‘yicha natijalar</h4>
-
-<form method="get" class="row g-2 align-items-end mb-3">
-    <input type="hidden" name="q" value="{{ query }}">
-    <div class="col-6 col-md-4">
-        <label class="form-label">Muallif</label>
-        <select name="author" class="form-select" onchange="this.form.submit()">
-            <option value="">Barchasi</option>
-            {% for author in authors %}
-            <option value="{{ author.id }}" {% if author.id|stringformat:'s' == current_author %}selected{% endif %}>
-                {{ author.name }}
-            </option>
-            {% endfor %}
-        </select>
+<div class="px-3 pt-2 pb-4">
+    <div class="d-flex align-items-center mb-2">
+        <a href="{% url 'home' %}" class="me-2 text-dark"><i class="bi bi-arrow-left"></i></a>
+        <h5 class="fw-bold mb-0">Qidiruv</h5>
     </div>
-    <div class="col-6 col-md-4">
-        <label class="form-label">Saralash</label>
-        <select name="sort" class="form-select" onchange="this.form.submit()">
-            <option value="">Mosligi bo‘yicha</option>
-            <option value="price_asc" {% if current_sort == "price_asc" %}selected{% endif %}>Narx: arzon - qimmat</option>
-            <option value="price_desc" {% if current_sort == "price_desc" %}selected{% endif %}>Narx: qimmat - arzon</option>
-            <option value="newest" {% if current_sort == "newest" %}selected{% endif %}>Eng yangi</option>
-            <option value="oldest" {% if current_sort == "oldest" %}selected{% endif %}>Eng eski</option>
-            <option value="popular" {% if current_sort == "popular" %}selected{% endif %}>Ko‘p ko‘rilgan</option>
-        </select>
-    </div>
-</form>
 
-<div class="row g-3">
-    {% for book in books %}
-    <div class="col-6 col-md-3">
-        <div class="card book-card h-100">
-            <img src="{{ book.cover_image.url if book.cover_image else 'https://via.placeholder.com/300x400?text=Rasm+yo%27q' }}" class="card-img-top" alt="{{ book.title }}">
-            <div class="card-body d-flex flex-column">
-                <h6 class="card-title">{{ book.title }}</h6>
-                <small class="text-muted">{{ book.author.name }} | {{ book.category.name }}</small>
-                <div class="mt-auto fw-bold">${{ book.sale_price }}</div>
-                <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+    <div class="d-flex align-items-center justify-content-end gap-3 mb-3">
+        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#sortModal">
+            <i class="bi bi-filter-left"></i><span>Saralash</span>
+        </button>
+        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <i class="bi bi-funnel"></i><span>Filter</span>
+        </button>
+    </div>
+
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" class="form-control border-start-0" name="q" placeholder="Qidiruv" value="{{ query }}">
+            {% if query %}
+            <button class="btn btn-outline-secondary" type="button" onclick="this.form.q.value=''; this.form.submit();"><i class="bi bi-x"></i></button>
+            {% endif %}
+        </div>
+        <input type="hidden" name="author" value="{{ current_author }}">
+        <input type="hidden" name="category" value="{{ current_category }}">
+        <input type="hidden" name="sort" value="{{ current_sort }}">
+        <input type="hidden" name="limit" value="{{ current_limit }}">
+    </form>
+
+    <div class="row g-3">
+        {% for book in books %}
+        <div class="col-6 col-md-3">
+            <div class="card book-card h-100">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300x400?text=Rasm+yo%27q" class="card-img-top" alt="{{ book.title }}">
+                {% endif %}
+                <div class="p-2">
+                    <div class="fw-semibold" style="font-size: 14px; line-height: 1.2;">{{ book.title }}</div>
+                    <div class="text-muted" style="font-size: 12px;">{{ book.author.name }} | {{ book.category.name }}</div>
+                    <div class="fw-bold text-primary mt-1">{{ book.sale_price }} so‘m</div>
+                    <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+                </div>
             </div>
         </div>
+        {% empty %}
+        <p>Hech narsa topilmadi.</p>
+        {% endfor %}
     </div>
-    {% empty %}
-    <p>Hech narsa topilmadi.</p>
-    {% endfor %}
+</div>
+
+<!-- Sort modal -->
+<div class="modal fade" id="sortModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header">
+        <h6 class="modal-title">Tartiblash</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form method="get">
+            <input type="hidden" name="q" value="{{ query }}">
+            <input type="hidden" name="author" value="{{ current_author }}">
+            <input type="hidden" name="category" value="{{ current_category }}">
+            <input type="hidden" name="limit" value="{{ current_limit }}">
+            <div class="list-group">
+                {% for key,label in sort_options %}
+                <label class="list-group-item d-flex align-items-center gap-2">
+                    <input class="form-check-input" type="radio" name="sort" value="{{ key }}" {% if current_sort == key %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <button class="btn btn-primary w-100 mt-3" type="submit">Saqlash</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header">
+        <h6 class="modal-title">Filter</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form method="get">
+            <input type="hidden" name="q" value="{{ query }}">
+            <input type="hidden" name="sort" value="{{ current_sort }}">
+            <div class="mb-3">
+                <label class="form-label">Muallif</label>
+                <select name="author" class="form-select">
+                    <option value="">Barchasi</option>
+                    {% for author in authors %}
+                    <option value="{{ author.id }}" {% if author.id|stringformat:'s' == current_author %}selected{% endif %}>
+                        {{ author.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Kategoriya</label>
+                <select name="category" class="form-select">
+                    <option value="">Barchasi</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.slug }}" {% if cat.slug == current_category %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Limit</label>
+                <select name="limit" class="form-select">
+                    <option value="">Barchasi</option>
+                    {% for opt in limit_options %}
+                    <option value="{{ opt }}" {% if current_limit == opt %}selected{% endif %}>{{ opt }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Qo‘llash</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

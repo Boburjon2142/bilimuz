@@ -64,3 +64,18 @@ class Book(models.Model):
 
     def get_absolute_url(self):
         return reverse("book_detail", args=[self.id, self.slug])
+
+
+class Banner(models.Model):
+    title = models.CharField(max_length=255, blank=True)
+    image = models.ImageField(upload_to="banners/")
+    link = models.URLField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["order", "-created_at"]
+
+    def __str__(self):
+        return self.title or f"Banner #{self.id}"
