@@ -4,19 +4,31 @@ from django.utils.text import slugify
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=255)
-    bio = models.TextField(blank=True)
+    name = models.CharField("Muallif", max_length=255)
+    bio = models.TextField("Tarjimai hol", blank=True)
+    is_featured = models.BooleanField("Asosiy sahifada ko‘rsatish", default=False)
+    photo = models.ImageField("Rasm", upload_to="authors/", blank=True, null=True)
 
     class Meta:
         ordering = ["name"]
+        verbose_name = "Muallif"
+        verbose_name_plural = "Mualliflar"
 
     def __str__(self):
         return self.name
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    name = models.CharField("Nomi", max_length=255)
+    slug = models.SlugField("Slug", unique=True)
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="children",
+        null=True,
+        blank=True,
+        verbose_name="Ota kategoriya",
+    )
 
     class Meta:
         verbose_name_plural = "Kategoriyalar"
@@ -31,28 +43,47 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
 
+class FeaturedCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="featured_items", verbose_name="Kategoriya")
+    title = models.CharField("Sarlavha", max_length=255, blank=True)
+    limit = models.PositiveIntegerField("Nechta ko‘rsatilsin", default=10)
+    order = models.PositiveIntegerField("Tartib", default=0)
+    is_active = models.BooleanField("Faol", default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["order", "id"]
+        verbose_name = "Tanlangan kategoriya"
+        verbose_name_plural = "Tanlangan kategoriyalar"
+
+    def __str__(self):
+        return self.title or f"{self.category.name}"
+
+
 class Book(models.Model):
     FORMAT_CHOICES = [
         ("hard", "Qattiq muqova"),
         ("soft", "Yumshoq muqova"),
     ]
 
-    title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="books")
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="books")
-    purchase_price = models.DecimalField(max_digits=8, decimal_places=2)
-    sale_price = models.DecimalField(max_digits=8, decimal_places=2)
-    description = models.TextField(blank=True)
-    cover_image = models.ImageField(upload_to="covers/", blank=True, null=True)
-    book_format = models.CharField(max_length=10, choices=FORMAT_CHOICES, blank=True)
-    pages = models.PositiveIntegerField(blank=True, null=True)
-    is_recommended = models.BooleanField(default=False)
-    views = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    title = models.CharField("Sarlavha", max_length=255)
+    slug = models.SlugField("Slug", unique=True)
+    category = models.ForeignKey(Category, verbose_name="Kategoriya", on_delete=models.CASCADE, related_name="books")
+    author = models.ForeignKey(Author, verbose_name="Muallif", on_delete=models.CASCADE, related_name="books")
+    purchase_price = models.DecimalField("Sotib olish narxi", max_digits=8, decimal_places=2)
+    sale_price = models.DecimalField("Sotish narxi", max_digits=8, decimal_places=2)
+    description = models.TextField("Tavsif", blank=True)
+    cover_image = models.ImageField("Muqova", upload_to="covers/", blank=True, null=True)
+    book_format = models.CharField("Format", max_length=10, choices=FORMAT_CHOICES, blank=True)
+    pages = models.PositiveIntegerField("Betlar soni", blank=True, null=True)
+    is_recommended = models.BooleanField("Tavsiya etilgan", default=False)
+    views = models.PositiveIntegerField("Ko‘rishlar soni", default=0)
+    created_at = models.DateTimeField("Yaratilgan", auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Kitob"
+        verbose_name_plural = "Kitoblar"
 
     def __str__(self):
         return self.title

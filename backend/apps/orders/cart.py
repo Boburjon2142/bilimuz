@@ -15,8 +15,16 @@ class Cart:
         self.session[settings.CART_SESSION_ID] = self.cart
         self.session.modified = True
 
+    def _normalize_quantity(self, quantity):
+        try:
+            qty = int(quantity)
+        except (TypeError, ValueError):
+            qty = 1
+        return max(qty, 0)
+
     def add(self, book_id, quantity=1):
         key = str(book_id)
+        quantity = self._normalize_quantity(quantity)
         self.cart[key] = self.cart.get(key, 0) + quantity
         if self.cart[key] <= 0:
             self.cart.pop(key, None)
@@ -24,6 +32,7 @@ class Cart:
 
     def update(self, book_id, quantity):
         key = str(book_id)
+        quantity = self._normalize_quantity(quantity)
         if quantity <= 0:
             self.cart.pop(key, None)
         else:

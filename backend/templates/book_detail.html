@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% block content %}
 <div class="px-3 py-3">
     <div class="card book-card border-0">
@@ -13,7 +14,7 @@
             {% if book.book_format %}<div class="mb-1 small text-muted">Format: {{ book.get_book_format_display }}</div>{% endif %}
             {% if book.pages %}<div class="mb-1 small text-muted">Sahifa: {{ book.pages }}</div>{% endif %}
             <div class="d-flex align-items-center gap-2 mt-2">
-                <div class="fw-bold fs-4 text-primary">{{ book.sale_price }} so‘m</div>
+                <div class="fw-bold fs-4 text-primary">{{ book.sale_price|intcomma }} so‘m</div>
             </div>
             {% if book.description %}
             <p class="mt-2 mb-3">{{ book.description }}</p>
@@ -27,6 +28,19 @@
                 </div>
                 <button class="btn btn-primary flex-grow-1" type="submit">Savatchaga qo‘shish</button>
             </form>
+            <div class="mt-3 d-flex gap-2">
+                {% if in_favorites %}
+                <form method="post" action="{% url 'remove_favorite' book.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-sm" type="submit">Sevimlidan olib tashlash</button>
+                </form>
+                {% else %}
+                <form method="post" action="{% url 'add_favorite' book.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-secondary btn-sm" type="submit">Sevimlilarga qo‘shish</button>
+                </form>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

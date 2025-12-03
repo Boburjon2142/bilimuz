@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+from django.db import transaction
 from backend.apps.catalog.models import Book
 from .cart import Cart
 from .forms import CheckoutForm
@@ -15,7 +16,10 @@ def cart_detail(request):
 @require_POST
 def add_to_cart(request, book_id):
     cart = Cart(request)
-    quantity = int(request.POST.get("quantity", 1))
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except (TypeError, ValueError):
+        quantity = 1
     cart.add(book_id, quantity)
     return redirect("cart_detail")
 
@@ -30,7 +34,10 @@ def remove_from_cart(request, book_id):
 @require_POST
 def update_cart(request, book_id):
     cart = Cart(request)
-    quantity = int(request.POST.get("quantity", 1))
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except (TypeError, ValueError):
+        quantity = 1
     cart.update(book_id, quantity)
     return redirect("cart_detail")
 
@@ -44,18 +51,19 @@ def checkout(request):
     if request.method == "POST":
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            order = form.save(commit=False)
-            order.total_price = cart.total_price()
-            order.save()
-            for item in cart_items:
-                OrderItem.objects.create(
-                    order=order,
-                    book=item["book"],
-                    quantity=item["quantity"],
-                    price=item["price"],
-                )
-            cart.clear()
-            request.session["last_order_id"] = order.id
+            with transaction.atomic():
+                order = form.save(commit=False)
+                order.total_price = cart.total_price()
+                order.save()
+                for item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        book=item["book"],
+                        quantity=item["quantity"],
+                        price=item["price"],
+                    )
+                cart.clear()
+                request.session["last_order_id"] = order.id
             return redirect(reverse("order_confirmation"))
     else:
         form = CheckoutForm()
