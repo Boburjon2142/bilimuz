@@ -1,0 +1,79 @@
+.
+├─backend
+│  ├─backend
+│  │  ├─admin.py
+│  │  ├─asgi.py
+│  │  ├─settings.py
+│  │  ├─urls.py
+│  │  ├─wsgi.py
+│  │  └─__init__.py
+│  ├─apps
+│  │  ├─catalog
+│  │  │  ├─admin.py
+│  │  │  ├─apps.py
+│  │  │  ├─context_processors.py
+│  │  │  ├─migrations
+│  │  │  │  ├─0001_initial.py
+│  │  │  │  ├─0002_banner.py
+│  │  │  │  ├─0002_category_parent.py
+│  │  │  │  ├─0003_featuredcategory.py
+│  │  │  │  ├─0003_merge_0002_banner_0002_category_parent.py
+│  │  │  │  ├─0004_author_is_featured.py
+│  │  │  │  ├─0004_merge_20251203_0914.py
+│  │  │  │  ├─0005_author_photo.py
+│  │  │  │  ├─0006_aboutpage.py
+│  │  │  │  ├─0006_merge_0004_merge_20251203_0914_0005_author_photo.py
+│  │  │  │  ├─0007_alter_author_options_alter_book_options_and_more.py
+│  │  │  │  └─0008_merge_20251204_1149.py
+│  │  │  ├─models.py
+│  │  │  ├─urls.py
+│  │  │  └─views.py
+│  │  └─orders
+│  │     ├─admin.py
+│  │     ├─apps.py
+│  │     ├─cart.py
+│  │     ├─context_processors.py
+│  │     ├─forms.py
+│  │     ├─migrations
+│  │     │  └─0001_initial.py
+│  │     ├─models.py
+│  │     ├─urls.py
+│  │     └─views.py
+│  ├─media
+│  ├─static
+│  │  ├─.gitkeep
+│  │  └─Favicon.png
+│  └─templates
+│     ├─about.html
+│     ├─admin
+│     │  ├─base_site.html
+│     │  └─catalog
+│     │     └─book
+│     │        ├─change_list.html
+│     │        └─search_form.html
+│     ├─authors_list.html
+│     ├─base.html
+│     ├─book_detail.html
+│     ├─book_list.html
+│     ├─cart.html
+│     ├─categories_list.html
+│     ├─category_list.html
+│     ├─checkout.html
+│     ├─favorites.html
+│     ├─home.html
+│     ├─order_confirmation.html
+│     └─search_results.html
+├─deploy
+│  └─ahost.md
+├─templates
+│  └─admin
+│     └─catalog
+│        └─book
+│           └─change_list.html
+├─.env
+├─.gitignore
+├─manage.py
+├─README.md
+├─requirements.txt
+├─db.sqlite3
+└─struktura.txt
