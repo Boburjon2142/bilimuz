@@ -110,3 +110,21 @@ class Banner(models.Model):
 
     def __str__(self):
         return self.title or f"Banner #{self.id}"
+
+
+class AboutPage(models.Model):
+    title = models.CharField("Sarlavha", max_length=255, default="Biz haqimizda")
+    body = models.TextField("Matn", blank=True)
+    link = models.URLField("Havola", blank=True)
+    image = models.ImageField("Rasm", upload_to="about/", blank=True, null=True)
+    is_active = models.BooleanField("Faol", default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Biz haqimizda kontent"
+        verbose_name_plural = "Biz haqimizda kontenti"
+        ordering = ["-updated_at", "-id"]
+
+    def __str__(self):
+        return self.title

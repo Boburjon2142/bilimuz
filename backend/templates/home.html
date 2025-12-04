@@ -84,7 +84,7 @@
         <span class="section-title">Mualliflar</span>
         <a class="section-link" href="{% url 'authors_list' %}">Hammasi <i class="bi bi-chevron-right"></i></a>
     </div>
-    <div class="scroll-row mb-4" style="grid-auto-columns: 30%;">
+    <div class="scroll-row mb-4" style="grid-auto-columns: 30%; justify-items: start;">
         {% for author in authors %}
         <a class="text-center text-decoration-none text-dark" href="{% url 'author_detail' author.id %}">
             <div class="mx-auto mb-2">

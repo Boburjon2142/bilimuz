@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Author, Category, Book, Banner, FeaturedCategory
+from .models import Author, Category, Book, Banner, FeaturedCategory, AboutPage
 
 
 class BookInline(admin.TabularInline):
@@ -81,3 +81,10 @@ class FeaturedCategoryAdmin(admin.ModelAdmin):
 class BannerAdmin(admin.ModelAdmin):
     list_display = ("title", "order", "is_active", "created_at")
     list_editable = ("order", "is_active")
+
+
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+    list_display = ("title", "is_active", "updated_at")
+    list_editable = ("is_active",)
+    search_fields = ("title", "body")

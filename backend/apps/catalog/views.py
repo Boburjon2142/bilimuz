@@ -59,7 +59,14 @@ def authors_list(request):
 
 
 def about(request):
-    return render(request, "about.html")
+    from .models import AboutPage
+
+    about_page = (
+        AboutPage.objects.filter(is_active=True)
+        .order_by("-updated_at", "-id")
+        .first()
+    )
+    return render(request, "about.html", {"about_page": about_page})
 
 
 def new_books_list(request):
