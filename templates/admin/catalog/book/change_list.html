@@ -4,16 +4,21 @@
 {% block extrastyle %}
 {{ block.super }}
 <style>
-@media (max-width: 640px) {
+@media (max-width: 767px) {
     html, body {
-        width: 100%;
-        max-width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
         overflow-x: hidden;
     }
     #container, #content, #content-main {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+    .breadcrumbs, #content {
+        padding-left: 12px;
+        padding-right: 12px;
     }
     #changelist-search form {
         display: grid;
@@ -22,9 +27,7 @@
         align-items: center;
         width: 100%;
     }
-    #changelist-search .searchbar-row {
-        display: contents;
-    }
+    #changelist-search .searchbar-row { display: contents; }
     #changelist-search input[type="text"] {
         grid-column: 1 / -1;
         width: 100%;
@@ -39,30 +42,16 @@
         width: 100%;
     }
     #changelist table,
-    #changelist .results {
-        width: 100%;
-        max-width: 100%;
+    #changelist .results,
+    .module {
+        width: 100% !important;
+        max-width: 100% !important;
         display: block;
         overflow-x: auto;
+        box-sizing: border-box;
     }
 }
 </style>
 {% endblock %}
 
-{% block search %}
-{% if cl.search_fields %}
-<div id="changelist-search">
-    <form method="get">
-        <div class="searchbar-row">
-            <label for="searchbar">{% trans "Search" %}:</label>
-            <input type="text" size="40" name="{{ cl.search_var }}" value="{{ cl.query }}" id="searchbar" autofocus>
-            {% for key, val in cl.params.items %}
-                {% if key != cl.search_var %}<input type="hidden" name="{{ key }}" value="{{ val }}">{% endif %}
-            {% endfor %}
-        </div>
-        <input type="submit" value="{% trans 'Search' %}" class="button">
-        <a class="button" href="{% url cl.opts|admin_urlname:'changelist' %}">{% trans "Reload" %}</a>
-    </form>
-</div>
-{% endif %}
-{% endblock %}
+{# Faqat layout o'zgarishi uchun, default search blokini saqlaymiz #}

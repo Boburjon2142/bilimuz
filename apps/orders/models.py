@@ -1,5 +1,5 @@
 from django.db import models
-from backend.apps.catalog.models import Book
+from apps.catalog.models import Book
 
 
 class Order(models.Model):

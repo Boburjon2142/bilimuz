@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.db import transaction
-from backend.apps.catalog.models import Book
+from apps.catalog.models import Book
 from .cart import Cart
 from .forms import CheckoutForm
 from .models import Order, OrderItem
