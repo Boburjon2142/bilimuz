@@ -84,19 +84,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.backend.wsgi.application'
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "bookstore_db"),
-        "USER": os.environ.get("POSTGRES_USER", "bookuser"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "StrongPassword123"),
-        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
-        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-        "OPTIONS": {
-            "options": "-c client_encoding=UTF8",
-        },
+# DB: default to SQLite for easy deploys (aHost friendly).
+# Switch to Postgres by setting DJANGO_DB_ENGINE=postgres in the environment.
+_db_engine = os.environ.get("DJANGO_DB_ENGINE", "sqlite").lower()
+if _db_engine in {"postgres", "postgresql"}:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("POSTGRES_DB", "bookstore_db"),
+            "USER": os.environ.get("POSTGRES_USER", "bookuser"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "StrongPassword123"),
+            "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+            "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+            "OPTIONS": {
+                "options": "-c client_encoding=UTF8",
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
