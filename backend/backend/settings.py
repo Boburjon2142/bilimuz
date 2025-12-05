@@ -1,21 +1,41 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "o'zgartring")
-DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
+# Read .env values (root folder) so aHost/prod configs are picked up automatically
+load_dotenv(BASE_DIR / ".env")
 
-_allowed_hosts = os.environ.get("DJANGO_ALLOWED_HOSTS", "")
-_split_hosts = [h.strip() for h in _allowed_hosts.split(",") if h.strip()]
-ALLOWED_HOSTS = _split_hosts if _split_hosts else ["127.0.0.1", "localhost"]
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "change-me")
+DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
-SECURE_SSL_REDIRECT = os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "False").lower() == "true"
-SESSION_COOKIE_SECURE = os.environ.get("DJANGO_SESSION_COOKIE_SECURE", "False").lower() == "true"
-CSRF_COOKIE_SECURE = os.environ.get("DJANGO_CSRF_COOKIE_SECURE", "False").lower() == "true"
-SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_SECURE_HSTS_SECONDS", "0"))
-SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", "False").lower() == "true"
-SECURE_HSTS_PRELOAD = os.environ.get("DJANGO_SECURE_HSTS_PRELOAD", "False").lower() == "true"
+_default_hosts = ["bilimstore.uz", "www.bilimstore.uz", "127.0.0.1", "localhost"]
+_allowed_hosts = os.environ.get("DJANGO_ALLOWED_HOSTS", ",".join(_default_hosts))
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(",") if h.strip()] or _default_hosts
+
+_default_csrf = "https://bilimstore.uz,https://www.bilimstore.uz"
+_csrf_origins = os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", _default_csrf)
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_origins.split(",") if origin.strip()]
+
+SECURE_SSL_REDIRECT = os.environ.get(
+    "DJANGO_SECURE_SSL_REDIRECT",
+    "True" if not DEBUG else "False",
+).lower() == "true"
+SESSION_COOKIE_SECURE = os.environ.get("DJANGO_SESSION_COOKIE_SECURE", str(not DEBUG)).lower() == "true"
+CSRF_COOKIE_SECURE = os.environ.get("DJANGO_CSRF_COOKIE_SECURE", str(not DEBUG)).lower() == "true"
+SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_SECURE_HSTS_SECONDS", "31536000" if SECURE_SSL_REDIRECT else "0"))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get(
+    "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS",
+    str(SECURE_SSL_REDIRECT),
+).lower() == "true"
+SECURE_HSTS_PRELOAD = os.environ.get("DJANGO_SECURE_HSTS_PRELOAD", str(SECURE_SSL_REDIRECT)).lower() == "true"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -112,21 +132,3 @@ MEDIA_ROOT = BASE_DIR / "backend" / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CART_SESSION_ID = "cart"
-
-# Security hardening (production-ready; controlled via env for local dev)
-SECURE_SSL_REDIRECT = os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "False").lower() == "true"
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_REFERRER_POLICY = "same-origin"
-X_FRAME_OPTIONS = "DENY"
-SECURE_HSTS_SECONDS = 31536000 if SECURE_SSL_REDIRECT else 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_SSL_REDIRECT
-SECURE_HSTS_PRELOAD = SECURE_SSL_REDIRECT
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
-    if origin.strip()
-]
