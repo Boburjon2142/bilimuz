@@ -20,7 +20,9 @@
         --grad-3: linear-gradient(135deg,#eb5757,#cb2d3e);
         --grad-4: linear-gradient(135deg,#6dd5ed,#2193b0);
     }
-        body { background: var(--app-bg); font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
+        body { background: var(--app-bg); font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; overflow-x: hidden; }
+        html { overflow-x: hidden; }
+        img { max-width: 100%; height: auto; }
         .topbar { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; }
         .brand { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
         .icon-btn { width: 40px; height: 40px; border-radius: 12px; border: 1px solid #eee; display: grid; place-items: center; color: #111; background: #fff; position: relative; overflow: hidden; }
@@ -32,7 +34,7 @@
         .cat-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
         .book-card { border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow); border: none; }
         .book-card img { height: 170px; object-fit: cover; }
-        .scroll-row { display: grid; grid-auto-flow: column; grid-auto-columns: 48%; gap: 12px; overflow-x: auto; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; }
+        .scroll-row { display: grid; grid-auto-flow: column; grid-auto-columns: 48%; gap: 12px; overflow-x: auto; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .scroll-row::-webkit-scrollbar { display: none; width: 0; height: 0; }
         .qty-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #ddd; display: grid; place-items: center; background: #fff; }
         input[type=number]::-webkit-inner-spin-button,

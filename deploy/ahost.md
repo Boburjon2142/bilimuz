@@ -7,12 +7,12 @@
 - Kutubxonalar: `pip install -r requirements.txt`
 
 ### 2. Muhit o‘zgaruvchilari (.env)
-Serverda `.env` yarating:
+Serverda `.env` yarating (Bilimstore.uz uchun):
 ```
 DJANGO_SECRET_KEY=super-secret
 DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=your-domain.com,www.your-domain.com
-DJANGO_CSRF_TRUSTED_ORIGINS=https://your-domain.com,https://www.your-domain.com
+DJANGO_ALLOWED_HOSTS=bilimstore.uz,www.bilimstore.uz
+DJANGO_CSRF_TRUSTED_ORIGINS=https://bilimstore.uz,https://www.bilimstore.uz
 DJANGO_SECURE_SSL_REDIRECT=True
 POSTGRES_DB=bookstore_db
 POSTGRES_USER=bookuser
@@ -54,7 +54,7 @@ WantedBy=multi-user.target
 ```
 server {
     listen 80;
-    server_name your-domain.com www.your-domain.com;
+    server_name bilimstore.uz www.bilimstore.uz;
 
     location /static/ {
         alias /path/to/bookstore/staticfiles/;
