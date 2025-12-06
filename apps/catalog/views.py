@@ -139,14 +139,21 @@ def book_detail(request, id, slug):
 
 
 def search(request):
+    def normalize(v):
+        return None if v in [None, "", "None", "null"] else v
+
     query = request.GET.get("q", "").strip()
+
+    # Normalize GET params
+    author_id = normalize(request.GET.get("author"))
+    category_slug = normalize(request.GET.get("category"))
+    sort = normalize(request.GET.get("sort"))
+    limit = normalize(request.GET.get("limit"))
+
     books = Book.objects.none()
     authors = Author.objects.none()
     categories = Category.objects.all()
-    author_id = request.GET.get("author")
-    category_slug = request.GET.get("category")
-    sort = request.GET.get("sort")
-    limit = request.GET.get("limit")
+
     sort_options = [
         ("", "Mosligi bo‘yicha"),
         ("popular", "Eng saralar"),
@@ -156,19 +163,25 @@ def search(request):
         ("price_desc", "Narx (qimmat-arzon)"),
         ("price_asc", "Narx (arzon-qimmat)"),
     ]
+
     limit_options = ["8", "12", "16", "24", "32"]
+
     if query:
-        books = (
-            Book.objects.filter(
-                Q(title__icontains=query)
-                | Q(author__name__icontains=query)
-                | Q(category__name__icontains=query)
-            ).select_related("author", "category")
-        )
+        books = Book.objects.filter(
+            Q(title__icontains=query)
+            | Q(author__name__icontains=query)
+            | Q(category__name__icontains=query)
+        ).select_related("author", "category")
+
+        # Filter by author
         if author_id:
             books = books.filter(author_id=author_id)
+
+        # Filter by category
         if category_slug:
             books = books.filter(category__slug=category_slug)
+
+        # Sorting
         sort_map = {
             "price_asc": "sale_price",
             "price_desc": "-sale_price",
@@ -178,9 +191,14 @@ def search(request):
             "alpha_asc": "title",
             "alpha_desc": "-title",
         }
+
         if sort in sort_map:
             books = books.order_by(sort_map[sort])
+
+        # Sidebar authors
         authors = Author.objects.filter(books__in=books).distinct()
+
+        # Limit
         if limit:
             try:
                 limit_int = int(limit)
@@ -188,6 +206,7 @@ def search(request):
                     books = books[:limit_int]
             except ValueError:
                 pass
+
     return render(
         request,
         "search_results.html",
@@ -195,15 +214,16 @@ def search(request):
             "query": query,
             "books": books,
             "authors": authors,
-            "current_author": author_id,
-            "current_sort": sort,
             "categories": categories,
+            "current_author": author_id,
             "current_category": category_slug,
+            "current_sort": sort,
             "current_limit": limit,
             "sort_options": sort_options,
             "limit_options": limit_options,
         },
     )
+
 
 
 def favorites(request):
