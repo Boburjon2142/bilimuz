@@ -143,3 +143,20 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CART_SESSION_ID = "cart"
+
+# Delivery configuration (coordinates: decimal degrees)
+SHOP_LAT = float(os.environ.get("SHOP_LAT", "41.2995"))
+SHOP_LNG = float(os.environ.get("SHOP_LNG", "69.2401"))
+DELIVERY_BASE_FEE_UZS = int(os.environ.get("DELIVERY_BASE_FEE_UZS", "10000"))
+DELIVERY_PER_KM_FEE_UZS = int(os.environ.get("DELIVERY_PER_KM_FEE_UZS", "2000"))
+DELIVERY_MIN_FEE_UZS = int(os.environ.get("DELIVERY_MIN_FEE_UZS", "10000"))
+DELIVERY_MAX_FEE_UZS = int(os.environ.get("DELIVERY_MAX_FEE_UZS", "60000"))
+DELIVERY_FREE_OVER_UZS = os.environ.get("DELIVERY_FREE_OVER_UZS")
+if DELIVERY_FREE_OVER_UZS is not None and DELIVERY_FREE_OVER_UZS != "":
+    DELIVERY_FREE_OVER_UZS = int(DELIVERY_FREE_OVER_UZS)
+else:
+    DELIVERY_FREE_OVER_UZS = None
+
+# Upload memory usage: force temp files instead of RAM to save memory footprint.
+FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.TemporaryFileUploadHandler"]
+FILE_UPLOAD_MAX_MEMORY_SIZE = 0  # always stream to disk

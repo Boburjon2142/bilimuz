@@ -2,11 +2,16 @@
 {% load humanize %}
 {% block content %}
 <div class="px-3 py-3">
+    <style>
+        /* Override generic .book-card img height on detail page */
+        .book-hero-img { height: auto !important; max-height: 520px; object-fit: cover; }
+        @media (min-width: 992px) { .book-hero-img { max-height: 720px; } }
+    </style>
     <div class="card book-card border-0">
         {% if book.cover_image %}
-        <img src="{{ book.cover_image.url }}" class="w-100" style="max-height: 420px; object-fit: cover;" alt="{{ book.title }}">
+        <img src="{{ book.cover_image.url }}" class="w-100 book-hero-img" alt="{{ book.title }}">
         {% else %}
-        <img src="https://via.placeholder.com/600x700?text=Rasm+yo%27q" class="w-100" style="max-height: 420px; object-fit: cover;" alt="{{ book.title }}">
+        <img src="https://via.placeholder.com/600x700?text=Rasm+yo%27q" class="w-100 book-hero-img" alt="{{ book.title }}">
         {% endif %}
         <div class="p-3">
             <h4 class="fw-bold mb-1">{{ book.title }}</h4>

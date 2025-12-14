@@ -5,7 +5,8 @@ from django.db import transaction
 from apps.catalog.models import Book
 from .cart import Cart
 from .forms import CheckoutForm
-from .models import Order, OrderItem
+from .models import DeliveryNotice, Order, OrderItem
+from .services.delivery import recalculate_delivery
 
 
 def cart_detail(request):
@@ -54,6 +55,7 @@ def checkout(request):
             with transaction.atomic():
                 order = form.save(commit=False)
                 order.total_price = cart.total_price()
+                order = recalculate_delivery(order, save=False)
                 order.save()
                 for item in cart_items:
                     OrderItem.objects.create(
@@ -68,10 +70,17 @@ def checkout(request):
     else:
         form = CheckoutForm()
 
+    delivery_notices = DeliveryNotice.objects.filter(is_active=True).order_by("-updated_at")[:5]
+
     return render(
         request,
         "checkout.html",
-        {"form": form, "cart_items": cart_items, "cart_total": cart.total_price()},
+        {
+            "form": form,
+            "cart_items": cart_items,
+            "cart_total": cart.total_price(),
+            "delivery_notices": delivery_notices,
+        },
     )
 
 
