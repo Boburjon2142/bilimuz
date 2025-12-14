@@ -42,18 +42,20 @@
             <span class="section-title">{{ section.title }}</span>
             <a class="section-link" href="{% url 'category_detail' section.category.slug %}">Hammasi <i class="bi bi-chevron-right"></i></a>
         </div>
-        <div class="scroll-row mb-3">
+        <div class="row g-3 mb-3">
             {% for book in section.books %}
-            <div class="card book-card">
-                {% if book.cover_image %}
-                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
-                {% else %}
-                <img src="https://via.placeholder.com/300x400?text=Rasm+yo%27q" alt="{{ book.title }}">
-                {% endif %}
-                <div class="p-2">
-                    <div class="fw-semibold" style="font-size: 14px; line-height: 1.2;">{{ book.title }}</div>
-                    <div class="text-muted" style="font-size: 12px;">{{ book.author.name }}</div>
-                    <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="card-img-top" style="height:260px; object-fit:cover;">
+                    {% else %}
+                    <img src="https://via.placeholder.com/600x260?text=Rasm+yo%27q" alt="{{ book.title }}" class="card-img-top" style="height:260px; object-fit:cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h6 class="card-title mb-1">{{ book.title }}</h6>
+                        <p class="card-text text-muted mb-0" style="font-size: 13px;">{{ book.author.name }}</p>
+                        <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -84,15 +86,16 @@
         <span class="section-title">Mualliflar</span>
         <a class="section-link" href="{% url 'authors_list' %}">Hammasi <i class="bi bi-chevron-right"></i></a>
     </div>
-    <div class="scroll-row mb-4" style="grid-auto-columns: 30%; justify-items: start;">
+    <div class="d-flex flex-wrap gap-3 mb-4">
         {% for author in authors %}
-        <a class="text-center text-decoration-none text-dark" href="{% url 'author_detail' author.id %}">
-            <div class="mx-auto mb-2">
+        <a class="text-center text-decoration-none text-dark" href="{% url 'author_detail' author.id %}" style="width:120px;">
+            <div class="mx-auto mb-2" style="width:100px; height:100px;">
                 {% if author.photo %}
-                <img src="{{ author.photo.url }}" class="avatar-circle" alt="{{ author.name }}">
+                <img src="{{ author.photo.url }}" class="rounded-circle img-fluid" alt="{{ author.name }}" style="width:100px; height:100px; object-fit:cover;">
                 {% else %}
-                {% cycle "bg-1" "bg-2" "bg-3" "bg-4" as avatar_grad silent %}
-                <div class="avatar-fallback {{ avatar_grad }}">{{ author.name|slice:":2" }}</div>
+                <div class="rounded-circle d-flex align-items-center justify-content-center bg-light" style="width:100px; height:100px;">
+                    <span class="fw-bold">{{ author.name|slice:":2" }}</span>
+                </div>
                 {% endif %}
             </div>
             <div class="fw-semibold" style="font-size: 13px;">{{ author.name }}</div>
@@ -106,18 +109,20 @@
         <span class="section-title">Yangi qo‘shilganlar</span>
         <a class="section-link" href="{% url 'new_books_list' %}">Hammasi <i class="bi bi-chevron-right"></i></a>
     </div>
-    <div class="scroll-row mb-4">
+    <div class="row g-3 mb-4">
         {% for book in new_books %}
-        <div class="card book-card">
-            {% if book.cover_image %}
-            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
-            {% else %}
-            <img src="https://via.placeholder.com/300x400?text=Rasm+yo%27q" alt="{{ book.title }}">
-            {% endif %}
-            <div class="p-2">
-                <div class="fw-semibold" style="font-size: 14px; line-height: 1.2;">{{ book.title }}</div>
-                <div class="text-muted" style="font-size: 12px;">{{ book.author.name }}</div>
-                <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+        <div class="col-12 col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="card-img-top" style="height:240px; object-fit:cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/400x240?text=Rasm+yo%27q" alt="{{ book.title }}" class="card-img-top" style="height:240px; object-fit:cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title mb-1">{{ book.title }}</h6>
+                    <p class="card-text text-muted mb-0" style="font-size: 13px;">{{ book.author.name }}</p>
+                    <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -129,18 +134,20 @@
         <span class="section-title">Eng ko‘p sotilganlar</span>
         <a class="section-link" href="{% url 'best_selling_list' %}">Hammasi <i class="bi bi-chevron-right"></i></a>
     </div>
-    <div class="scroll-row mb-4">
+    <div class="row g-3 mb-4">
         {% for book in best_selling %}
-        <div class="card book-card">
-            {% if book.cover_image %}
-            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
-            {% else %}
-            <img src="https://via.placeholder.com/300x400?text=Rasm+yo%27q" alt="{{ book.title }}">
-            {% endif %}
-            <div class="p-2">
-                <div class="fw-semibold" style="font-size: 14px; line-height: 1.2;">{{ book.title }}</div>
-                <div class="text-muted" style="font-size: 12px;">{{ book.author.name }}</div>
-                <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+        <div class="col-12 col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="card-img-top" style="height:240px; object-fit:cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/400x240?text=Rasm+yo%27q" alt="{{ book.title }}" class="card-img-top" style="height:240px; object-fit:cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title mb-1">{{ book.title }}</h6>
+                    <p class="card-text text-muted mb-0" style="font-size: 13px;">{{ book.author.name }}</p>
+                    <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -152,18 +159,20 @@
         <span class="section-title">Tavsiya etilganlar</span>
         <a class="section-link" href="{% url 'recommended_list' %}">Hammasi <i class="bi bi-chevron-right"></i></a>
     </div>
-    <div class="scroll-row">
+    <div class="row g-3 mb-4">
         {% for book in recommended %}
-        <div class="card book-card">
-            {% if book.cover_image %}
-            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
-            {% else %}
-            <img src="https://via.placeholder.com/300x400?text=Rasm+yo%27q" alt="{{ book.title }}">
-            {% endif %}
-            <div class="p-2">
-                <div class="fw-semibold" style="font-size: 14px; line-height: 1.2;">{{ book.title }}</div>
-                <div class="text-muted" style="font-size: 12px;">{{ book.author.name }}</div>
-                <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+        <div class="col-12 col-md-3">
+            <div class="card h-100 border-0 shadow-sm">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="card-img-top" style="height:240px; object-fit:cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/400x240?text=Rasm+yo%27q" alt="{{ book.title }}" class="card-img-top" style="height:240px; object-fit:cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title mb-1">{{ book.title }}</h6>
+                    <p class="card-text text-muted mb-0" style="font-size: 13px;">{{ book.author.name }}</p>
+                    <a href="{{ book.get_absolute_url }}" class="stretched-link"></a>
+                </div>
             </div>
         </div>
         {% endfor %}
