@@ -127,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const openMapsBtn = document.getElementById("open-google-maps");
     if (!latInput || !lngInput || !mapBox) return;
 
-    let mapOpened = false;
     let centerLat = parseFloat(latInput.value) || 41.2995;
     let centerLng = parseFloat(lngInput.value) || 69.2401;
     const zoom = 13;
@@ -137,10 +136,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (latInput.value && lngInput.value) {
             const url = `https://www.google.com/maps?q=${latInput.value},${lngInput.value}`;
             mapsInput.value = url;
-            if (!mapOpened) {
-                window.open(url, "_blank", "noopener");
-                mapOpened = true;
-            }
         }
     }
 
